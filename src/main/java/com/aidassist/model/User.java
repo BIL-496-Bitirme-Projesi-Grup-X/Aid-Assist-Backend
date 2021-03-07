@@ -1,9 +1,16 @@
 package com.aidassist.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "\"User\"")
 public class User {
+    @Id
+    private String nationalIdentityNo;
     private String name;
     private String surname;
-    private String nationalIdentityNo;
     private String password;
 
     public String getName() {
@@ -36,5 +43,15 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", nationalIdentityNo='" + nationalIdentityNo + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

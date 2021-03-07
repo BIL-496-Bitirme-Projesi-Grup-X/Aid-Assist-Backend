@@ -1,0 +1,5 @@
+// run postgres db container
+docker-compose -f postgres_db.yml up
+
+// close postgres db container
+docker-compose -f postgres_db.yml down
