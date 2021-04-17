@@ -45,4 +45,8 @@ public class UserService implements UserDetailsService {
     public Optional<User> findUserById(String nationalIdentityNo) {
         return userRepository.findById(nationalIdentityNo);
     }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
 }

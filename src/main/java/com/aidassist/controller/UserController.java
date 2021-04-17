@@ -3,6 +3,7 @@ package com.aidassist.controller;
 import com.aidassist.bl.UserService;
 import com.aidassist.jwt.JwtUtil;
 import com.aidassist.model.User;
+import com.aidassist.model.UserDTO;
 import com.aidassist.model.UserResponse;
 import com.aidassist.model.UserResponseError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("user")
 public class UserController {
-
-    // TODO this will be deleted after db configurations
-    Map<String, User> userMap = new HashMap<String, User>();
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -83,22 +81,29 @@ public class UserController {
     @CrossOrigin
     @PostMapping(value = "/update", produces = "application/json")
     public ResponseEntity<String> update(@RequestBody User user) {
-        if (!userMap.containsKey(user.getNationalIdentityNo())) {
+        Optional<User> optionalUser = userService.findUserById(user.getNationalIdentityNo());
+        if (!optionalUser.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        userMap.put(user.getNationalIdentityNo(), user);
+        User updatedUser = optionalUser.get();
+        updatedUser.setName(user.getName());
+        updatedUser.setSurname(user.getSurname());
+
+        userService.save(updatedUser);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @CrossOrigin
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<User> getUser(@PathVariable String id) {
-        if (!userMap.containsKey(id)) {
+    public ResponseEntity<UserDTO> getUser(@PathVariable String id) {
+        Optional<User> userOptional = userService.findUserById(id);
+
+        if (!userOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(userMap.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(new UserDTO(userOptional.get()), HttpStatus.OK);
     }
 
 }
